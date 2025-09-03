@@ -3,8 +3,17 @@
 ]# 
 
 import 
-  nimgl/[glfw,vulkan]
-  #validation_layers
+  nimgl/[glfw,vulkan],
+  validation_layers,
+  vk_result_errors
+
+# Create validation layer usage bool during compile-time
+const useValidation =
+  when defined(vulkanDebug):
+    true
+  else:
+    false
+
 
 proc checkExtensions()=
   # We need to make sure that Vulkan loads the necessary extensions.
@@ -51,10 +60,26 @@ proc createInstance():VkInstance =
   createInfo.enabledExtensionCount = glfwExtensionCount
   createInfo.ppEnabledExtensionNames = glfwExtensions
 
+  if useValidation == true:
+    echo "Use Validation is on."
+    # Check to make sure validation layer is installed.
+    for layer in validation_layers.validationLayers:
+      if not hasValidationLayer(layer):
+        quit("Attempted to use validation layers but at least one does not exist please make sure they are installed.")
+
+    createInfo.enabledLayerCount = uint32(validation_layers.validationLayers.len)
+    createInfo.ppEnabledLayerNames = cast[ptr UncheckedArray[cstring]](unsafeAddr validation_layers.validationLayers[0])
+  else:
+    echo "Use Validation is off."
+
+  echo createInfo.enabledLayerCount, " Layer(s) are to be enabled"
+
+  # Check to make sure extensions are properly loaded
   checkExtensions()
 
   let instCrtRst = vkCreateInstance(addr(createInfo),nil,addr(result))
   if instCrtRst != VK_SUCCESS:
+    echo resultToString(instCrtRst)
     quit("Error in creating instance!")
 
 
