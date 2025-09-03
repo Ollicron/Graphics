@@ -14,7 +14,6 @@ const useValidation =
   else:
     false
 
-
 proc checkExtensions()=
   # We need to make sure that Vulkan loads the necessary extensions.
   var extensionCount:uint32 = 0

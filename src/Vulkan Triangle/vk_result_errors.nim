@@ -1,6 +1,7 @@
 #[
   The purpose of this module is just to store a function that prints out any resulting enum out of a VkResult
 ]#
+import nimgl/[vulkan]
 
 proc resultToString*(r: VkResult): string =
   case r
