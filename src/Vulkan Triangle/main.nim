@@ -1,13 +1,18 @@
 import 
   init_glfw,
   init_vk,
-  pick_physical
+  pick_physical_device,
+  queue_families
 
 proc main()=
   try:
-    let window = initWindow()
-    let vkInstance = initVulkan()
-    let device = pickPhysicalDevice(vkInstance)
+    let 
+      window = initWindow()
+      vkInstance = initVulkan()
+      device = pickPhysicalDevice(vkInstance)
+
+    findQueueFamilies(device)
+
 
     mainLoop(window)
     cleanup(window,vkInstance)
