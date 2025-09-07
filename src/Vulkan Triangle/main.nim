@@ -2,7 +2,10 @@ import
   init_glfw,
   init_vk,
   pick_physical_device,
-  queue_families
+  create_logical_device,
+  cleanup,
+  termstyle
+
 
 proc main()=
   try:
@@ -10,12 +13,11 @@ proc main()=
       window = initWindow()
       vkInstance = initVulkan()
       device = pickPhysicalDevice(vkInstance)
-
-    findQueueFamilies(device)
+      logDevice = createLogicalDevice(device)
 
 
     mainLoop(window)
-    cleanup(window,vkInstance)
+    cleanup(window,vkInstance,logDevice)
   except:
     quit("Could not start application")
 

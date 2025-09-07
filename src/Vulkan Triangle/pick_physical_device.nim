@@ -4,10 +4,11 @@
 
 import 
   nimgl/[vulkan],
-  vk_result_errors
+  vk_result_errors,
+  termstyle
 
 # Procedure to find a suitable device is suitable
-proc checkForDevice(device:VkPhysicalDevice):bool=
+proc pickTheDevice(device:VkPhysicalDevice):bool=
   # In order to check if a device is good to work with we need to get its properties first.
 
   var deviceProperties:VkPhysicalDeviceProperties 
@@ -17,7 +18,7 @@ proc checkForDevice(device:VkPhysicalDevice):bool=
 
   # For now only check if the physical device is a discrete GPU
   if deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
-    echo "Chosen Device: ",$cast[cstring](unsafeAddr(deviceProperties.deviceName))
+    echo red "Chosen Device: ",$cast[cstring](unsafeAddr(deviceProperties.deviceName))
     return true
   else:
     return false
@@ -41,9 +42,8 @@ proc pickPhysicalDevice*(instance:VkInstance):VkPhysicalDevice=
   var devices = newSeq[VkPhysicalDevice](deviceCount)
   physCheck = vkEnumeratePhysicalDevices(instance,addr(deviceCount),addr(devices[0]))
 
-
   for device in devices:
-    if checkForDevice(device):
+    if pickTheDevice(device):
       result = device
 
 

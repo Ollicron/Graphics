@@ -29,8 +29,3 @@ proc mainLoop*(window:GLFWWindow) =
   while windowShouldClose(window) == false:
     glfwPollEvents()
 
-# Proc to cleanup the window to be destroyed
-proc cleanup*(window:GLFWWindow, instance:VkInstance) =
-  vkDestroyInstance(instance,nil)
-  destroyWindow(window)
-  glfwTerminate()
